@@ -99,7 +99,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-sidebar/95 backdrop-blur-xl border-t border-border">
         <div className="grid grid-cols-5">
-          {NAV.slice(0, 5).map((item) => {
+          {NAV.map((item) => {
             const active = item.to === "/" ? path === "/" : path.startsWith(item.to);
             return (
               <Link

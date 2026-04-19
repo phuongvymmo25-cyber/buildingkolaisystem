@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TrainingRouteImport } from './routes/training'
 import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MissionsRouteImport } from './routes/missions'
@@ -18,11 +17,6 @@ import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as IncomeRouteImport } from './routes/income'
 import { Route as IndexRouteImport } from './routes/index'
 
-const TrainingRoute = TrainingRouteImport.update({
-  id: '/training',
-  path: '/training',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SkillsRoute = SkillsRouteImport.update({
   id: '/skills',
   path: '/skills',
@@ -67,7 +61,6 @@ export interface FileRoutesByFullPath {
   '/missions': typeof MissionsRoute
   '/profile': typeof ProfileRoute
   '/skills': typeof SkillsRoute
-  '/training': typeof TrainingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -77,7 +70,6 @@ export interface FileRoutesByTo {
   '/missions': typeof MissionsRoute
   '/profile': typeof ProfileRoute
   '/skills': typeof SkillsRoute
-  '/training': typeof TrainingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,7 +80,6 @@ export interface FileRoutesById {
   '/missions': typeof MissionsRoute
   '/profile': typeof ProfileRoute
   '/skills': typeof SkillsRoute
-  '/training': typeof TrainingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,7 +91,6 @@ export interface FileRouteTypes {
     | '/missions'
     | '/profile'
     | '/skills'
-    | '/training'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -110,7 +100,6 @@ export interface FileRouteTypes {
     | '/missions'
     | '/profile'
     | '/skills'
-    | '/training'
   id:
     | '__root__'
     | '/'
@@ -120,7 +109,6 @@ export interface FileRouteTypes {
     | '/missions'
     | '/profile'
     | '/skills'
-    | '/training'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -131,18 +119,10 @@ export interface RootRouteChildren {
   MissionsRoute: typeof MissionsRoute
   ProfileRoute: typeof ProfileRoute
   SkillsRoute: typeof SkillsRoute
-  TrainingRoute: typeof TrainingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/training': {
-      id: '/training'
-      path: '/training'
-      fullPath: '/training'
-      preLoaderRoute: typeof TrainingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/skills': {
       id: '/skills'
       path: '/skills'
@@ -203,7 +183,6 @@ const rootRouteChildren: RootRouteChildren = {
   MissionsRoute: MissionsRoute,
   ProfileRoute: ProfileRoute,
   SkillsRoute: SkillsRoute,
-  TrainingRoute: TrainingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
