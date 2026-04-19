@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Flame, Zap, CheckCircle2, DollarSign, ArrowRight, Trophy, Target, Award } from "lucide-react";
+import { Flame, Zap, CheckCircle2, DollarSign, ArrowRight, Trophy } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
