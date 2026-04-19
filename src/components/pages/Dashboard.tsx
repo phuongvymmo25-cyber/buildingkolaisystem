@@ -173,6 +173,33 @@ export function Dashboard() {
             <ArrowRight className="h-7 w-7 text-primary-foreground group-hover:translate-x-1 transition-transform" />
           </div>
         </Link>
+
+        {/* Huy hiệu — chứng nhận sự trưởng thành */}
+        <div className="pt-2">
+          <div className="flex items-baseline justify-between mb-3">
+            <h2 className="text-lg md:text-xl font-black tracking-tight">Huy hiệu trưởng thành</h2>
+            <div className="text-xs text-muted-foreground">{earnedBadges.size}/{BADGES.length} đã đạt</div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {BADGES.map((b) => {
+              const earned = earnedBadges.has(b.key);
+              return (
+                <Card
+                  key={b.key}
+                  className={`p-4 text-center border transition-all ${
+                    earned
+                      ? "bg-gradient-to-br from-gold/15 to-primary/10 border-gold/40 glow-gold"
+                      : "bg-card/40 border-border opacity-60"
+                  }`}
+                >
+                  <div className={`text-4xl mb-2 ${earned ? "" : "grayscale"}`}>{b.icon}</div>
+                  <div className="text-xs font-bold">{b.name}</div>
+                  <div className="text-[10px] text-muted-foreground mt-1">{b.desc}</div>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
