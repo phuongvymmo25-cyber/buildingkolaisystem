@@ -1,0 +1,183 @@
+import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { Flame, Zap, CheckCircle2, DollarSign, ArrowRight, Trophy } from "lucide-react";
+import { useProfile } from "@/hooks/useProfile";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  getPhaseFromDay,
+  PHASE_INFO,
+  getCurrentMilestone,
+  getNextMilestone,
+  getTodayMissions,
+  todayVN,
+} from "@/lib/missions";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export function Dashboard() {
+  const { user } = useAuth();
+  const { profile, loading } = useProfile();
+  const [todayPoints, setTodayPoints] = useState(0);
+  const [completedToday, setCompletedToday] = useState(0);
+
+  const day = profile?.day_number ?? 1;
+  const phase = getPhaseFromDay(day);
+  const phaseInfo = PHASE_INFO[phase];
+  const totalToday = getTodayMissions(day).length;
+  const current = getCurrentMilestone(profile?.current_milestone ?? 0);
+  const next = getNextMilestone(profile?.current_milestone ?? 0);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("daily_missions")
+      .select("completed, points_awarded")
+      .eq("user_id", user.id)
+      .eq("date", todayVN())
+      .then(({ data }) => {
+        if (!data) return;
+        setCompletedToday(data.filter((m) => m.completed).length);
+        setTodayPoints(data.reduce((s, m) => s + (m.points_awarded || 0), 0));
+      });
+  }, [user, profile]);
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-32" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-28" />)}
+        </div>
+      </div>
+    );
+  }
+
+  const milestoneProgress = next && current
+    ? ((profile!.current_milestone - current.amount) / (next.amount - current.amount)) * 100
+    : next
+      ? (profile!.current_milestone / next.amount) * 100
+      : 100;
+
+  return (
+    <div className="space-y-6">
+      {/* Greeting */}
+      <div className="hidden md:flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-black tracking-tight">
+            Chào, <span className="text-gradient-primary">{profile?.display_name}</span> 👋
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">Cùng chinh phục thử thách hôm nay nhé!</p>
+        </div>
+        <div className="flex items-center gap-3">
+          {current && (
+            <div className="px-4 py-2 rounded-xl bg-gold/15 border border-gold/30 text-gold text-sm font-bold flex items-center gap-2">
+              <Trophy className="h-4 w-4" /> ${current.amount} • {current.title}
+            </div>
+          )}
+          <div className="px-4 py-2 rounded-xl bg-primary/15 border border-primary/30 text-primary font-bold text-sm">
+            Ngày {day}/30
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile day/income chip */}
+      <div className="md:hidden flex gap-2 overflow-x-auto -mx-1 px-1">
+        <div className="px-3 py-1.5 rounded-full bg-primary/15 border border-primary/30 text-primary font-bold text-xs whitespace-nowrap">
+          Ngày {day}/30
+        </div>
+        {current && (
+          <div className="px-3 py-1.5 rounded-full bg-gold/15 border border-gold/30 text-gold font-bold text-xs whitespace-nowrap">
+            ${current.amount} • {current.title}
+          </div>
+        )}
+      </div>
+
+      {/* Phase banner */}
+      <div className={`rounded-2xl p-5 border ${phaseInfo.bgClass} ${phaseInfo.borderClass} relative overflow-hidden`}>
+        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-20" style={{ backgroundColor: `var(--${phaseInfo.color})` }} />
+        <div className="relative">
+          <div className={`text-xs font-bold uppercase tracking-wider ${phaseInfo.textClass}`}>Pha hiện tại</div>
+          <div className="text-xl md:text-2xl font-black mt-1">{phaseInfo.name}</div>
+          <div className="text-sm text-muted-foreground mt-2">
+            Tập trung vào nhiệm vụ ưu tiên #1, #2, #3 mỗi ngày để tối đa hoá kết quả.
+          </div>
+        </div>
+      </div>
+
+      {/* 4 metrics */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <MetricCard icon={<Flame className="h-5 w-5" />} label="Streak" value={`${profile?.streak ?? 0}`} suffix="ngày" color="gold" iconAnim />
+        <MetricCard icon={<Zap className="h-5 w-5" />} label="Điểm hôm nay" value={`+${todayPoints}`} color="primary" />
+        <MetricCard icon={<CheckCircle2 className="h-5 w-5" />} label="Nhiệm vụ" value={`${completedToday}/${totalToday}`} color="success" />
+        <MetricCard icon={<DollarSign className="h-5 w-5" />} label="Mốc hiện tại" value={current ? `$${current.amount}` : "$0"} color="gold" />
+      </div>
+
+      {/* Progress to next milestone */}
+      <Card className="p-5 bg-card/60 backdrop-blur border-border">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <div className="text-xs text-muted-foreground">Tiến độ mốc dòng tiền</div>
+            <div className="text-lg font-bold mt-0.5">
+              ${profile?.current_milestone ?? 0} → ${next?.amount ?? 1000}
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-xs text-muted-foreground">Mốc tiếp theo</div>
+            <div className="text-sm font-semibold">{next?.title ?? "Đã chinh phục đỉnh!"}</div>
+          </div>
+        </div>
+        <div className="h-3 bg-muted rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-primary via-primary-glow to-gold transition-all duration-700"
+            style={{ width: `${Math.min(Math.max(milestoneProgress, 4), 100)}%` }}
+          />
+        </div>
+      </Card>
+
+      {/* Quick CTA */}
+      <Link
+        to="/missions"
+        className="block group rounded-2xl bg-gradient-primary p-5 md:p-6 shadow-[0_20px_60px_-15px_oklch(0.55_0.24_295/0.5)] hover:shadow-[0_25px_80px_-15px_oklch(0.55_0.24_295/0.7)] transition-all"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-primary-foreground/80 text-xs font-medium uppercase tracking-wider">Tiếp theo</div>
+            <div className="text-primary-foreground text-lg md:text-xl font-bold mt-1">
+              Hoàn thành {totalToday - completedToday} nhiệm vụ còn lại
+            </div>
+          </div>
+          <ArrowRight className="h-7 w-7 text-primary-foreground group-hover:translate-x-1 transition-transform" />
+        </div>
+      </Link>
+    </div>
+  );
+}
+
+function MetricCard({
+  icon, label, value, suffix, color, iconAnim,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  suffix?: string;
+  color: "primary" | "gold" | "success";
+  iconAnim?: boolean;
+}) {
+  const colorMap = {
+    primary: "text-primary bg-primary/15",
+    gold: "text-gold bg-gold/15",
+    success: "text-success bg-success/15",
+  };
+  return (
+    <Card className="p-4 bg-card/60 backdrop-blur border-border hover:border-primary/40 transition">
+      <div className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${colorMap[color]} ${iconAnim ? "animate-fire" : ""}`}>
+        {icon}
+      </div>
+      <div className="mt-3 text-[11px] text-muted-foreground font-medium uppercase tracking-wider">{label}</div>
+      <div className="text-2xl font-black mt-0.5">
+        {value} {suffix && <span className="text-xs font-medium text-muted-foreground">{suffix}</span>}
+      </div>
+    </Card>
+  );
+}
