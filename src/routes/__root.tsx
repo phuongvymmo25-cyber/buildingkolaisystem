@@ -80,6 +80,17 @@ function RootComponent() {
 function AppShell() {
   const { user, loading } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user && path !== "/login") {
+      navigate({ to: "/login", replace: true });
+    }
+    if (user && path === "/login") {
+      navigate({ to: "/", replace: true });
+    }
+  }, [user, loading, path, navigate]);
 
   if (loading) {
     return (
@@ -89,12 +100,7 @@ function AppShell() {
     );
   }
 
-  // Login page = no layout
-  if (path === "/login") {
-    return <Outlet />;
-  }
-
-  if (!user) {
+  if (path === "/login" || !user) {
     return <Outlet />;
   }
 
