@@ -93,17 +93,17 @@ export function LoginPage() {
           <div className="absolute inset-x-0 bottom-0 p-6 lg:p-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/60 backdrop-blur-md border border-primary/30 mb-4">
               <span className="h-2 w-2 rounded-full bg-orange-400 animate-pulse" />
-              <span className="text-xs font-semibold tracking-widest text-orange-300 uppercase">Khởi hành 25/4/2026</span>
+              <span className="text-xs font-semibold tracking-widest text-orange-300 uppercase"></span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-black leading-tight">
               <span className="bg-gradient-to-r from-orange-300 via-amber-200 to-yellow-300 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(251,146,60,0.5)]">
-                Building
+                
               </span>
               <br />
-              <span className="text-foreground">The KOL AI System</span>
+              <span className="text-foreground"></span>
             </h2>
             <p className="mt-3 text-sm lg:text-base text-foreground/80 max-w-md">
-              Bước vào hành trình 30 ngày — nơi dòng tiền, kỷ luật và bản lĩnh KOL được tôi luyện trong lửa.
+              
             </p>
           </div>
         </div>
