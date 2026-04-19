@@ -72,10 +72,11 @@ export function Dashboard() {
     );
   }
 
+  const currentMilestoneAmt = profile?.current_milestone ?? 0;
   const milestoneProgress = next && current
-    ? ((profile!.current_milestone - current.amount) / (next.amount - current.amount)) * 100
+    ? ((currentMilestoneAmt - current.amount) / (next.amount - current.amount)) * 100
     : next
-      ? (profile!.current_milestone / next.amount) * 100
+      ? (currentMilestoneAmt / next.amount) * 100
       : 100;
 
 
