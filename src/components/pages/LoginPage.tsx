@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { useEffect } from "react";
 import logo from "@/assets/logo.png";
+import heroImg from "@/assets/login-hero.png";
 
 export function LoginPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -70,25 +70,56 @@ export function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 py-10"
+      className="min-h-screen w-full flex items-center justify-center px-4 py-6 lg:p-10"
       style={{
         backgroundImage:
-          "radial-gradient(ellipse 70% 60% at 50% 0%, oklch(0.3 0.18 295 / 0.5), transparent 60%), linear-gradient(180deg, #0A0A0F 0%, #1A0A2E 100%)",
+          "radial-gradient(ellipse 60% 50% at 50% 0%, oklch(0.3 0.18 295 / 0.4), transparent 60%), linear-gradient(180deg, #0A0A0F 0%, #1A0A2E 100%)",
       }}
     >
-      <div className="w-full max-w-md">
-        <div className="bg-card/60 backdrop-blur-2xl border border-border rounded-3xl p-8 shadow-[0_30px_80px_-20px_oklch(0.55_0.24_295/0.4)]">
-          <div className="text-center mb-7">
-            <div className="inline-block relative mb-5">
-              <div className="absolute inset-0 bg-primary/40 blur-3xl rounded-full" />
-              <img src={logo} alt="KOL AI SYSTEM" width={88} height={88} className="relative drop-shadow-[0_0_30px_oklch(0.6_0.24_295/0.8)]" />
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] rounded-3xl overflow-hidden border border-border/60 shadow-[0_40px_120px_-30px_oklch(0.55_0.24_295/0.5)] bg-card/40 backdrop-blur-2xl">
+        {/* LEFT — Hero image (hidden on small mobile, shows from sm+) */}
+        <div className="relative hidden sm:block min-h-[280px] lg:min-h-[680px] overflow-hidden">
+          <img
+            src={heroImg}
+            alt="KOL AI System — Building the empire"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Glow & legibility overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-background/60 lg:to-background/70" />
+          <div className="absolute inset-0 mix-blend-overlay opacity-40 bg-gradient-to-br from-primary/30 via-transparent to-orange-500/20" />
+
+          {/* Bottom caption */}
+          <div className="absolute inset-x-0 bottom-0 p-6 lg:p-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/60 backdrop-blur-md border border-primary/30 mb-4">
+              <span className="h-2 w-2 rounded-full bg-orange-400 animate-pulse" />
+              <span className="text-xs font-semibold tracking-widest text-orange-300 uppercase">Khởi hành 25/4/2026</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">
+            <h2 className="text-3xl lg:text-5xl font-black leading-tight">
+              <span className="bg-gradient-to-r from-orange-300 via-amber-200 to-yellow-300 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(251,146,60,0.5)]">
+                Building
+              </span>
+              <br />
+              <span className="text-foreground">The KOL AI System</span>
+            </h2>
+            <p className="mt-3 text-sm lg:text-base text-foreground/80 max-w-md">
+              Bước vào hành trình 30 ngày — nơi dòng tiền, kỷ luật và bản lĩnh KOL được tôi luyện trong lửa.
+            </p>
+          </div>
+        </div>
+
+        {/* RIGHT — Auth form */}
+        <div className="p-6 sm:p-8 lg:p-10 flex flex-col justify-center bg-card/60 backdrop-blur-2xl">
+          <div className="text-center mb-6">
+            <div className="inline-block relative mb-4">
+              <div className="absolute inset-0 bg-primary/40 blur-3xl rounded-full" />
+              <img src={logo} alt="KOL AI SYSTEM" width={72} height={72} className="relative drop-shadow-[0_0_30px_oklch(0.6_0.24_295/0.8)]" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-1">
               <span className="text-foreground">KOL AI </span>
               <span className="text-gradient-primary">SYSTEM</span>
             </h1>
-            <p className="text-sm font-medium text-foreground/90">Hệ thống huấn luyện dòng tiền 30 ngày</p>
-            <p className="text-xs text-muted-foreground mt-1">Dành cho KOL & Affiliate Việt Nam</p>
+            <p className="text-xs md:text-sm font-medium text-foreground/80">Hệ thống huấn luyện dòng tiền 30 ngày</p>
           </div>
 
           <Button
@@ -127,7 +158,7 @@ export function LoginPage() {
               <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Tối thiểu 6 ký tự" className="mt-1 bg-background/50" />
             </div>
             <Button type="submit" disabled={loading} className="w-full bg-gradient-primary hover:opacity-90 rounded-xl h-11 font-semibold">
-              {loading ? "Đang xử lý..." : mode === "signup" ? "Tạo tài khoản" : "Đăng nhập"}
+              {loading ? "Đang xử lý..." : mode === "signup" ? "Tạo tài khoản — Bắt đầu hành trình" : "Đăng nhập"}
             </Button>
           </form>
 
