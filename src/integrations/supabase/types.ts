@@ -14,7 +14,147 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      badges: {
+        Row: {
+          badge_key: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_key: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_key?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_missions: {
+        Row: {
+          completed: boolean
+          created_at: string
+          date: string
+          id: string
+          mission_key: string
+          points_awarded: number
+          quantity_logged: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          date: string
+          id?: string
+          mission_key: string
+          points_awarded?: number
+          quantity_logged?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          date?: string
+          id?: string
+          mission_key?: string
+          points_awarded?: number
+          quantity_logged?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      income_milestones: {
+        Row: {
+          achieved_at: string
+          id: string
+          milestone_amount: number
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string
+          id?: string
+          milestone_amount: number
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string
+          id?: string
+          milestone_amount?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          current_milestone: number
+          day_number: number
+          display_name: string
+          id: string
+          last_active_date: string | null
+          start_date: string
+          streak: number
+          total_points: number
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          current_milestone?: number
+          day_number?: number
+          display_name?: string
+          id: string
+          last_active_date?: string | null
+          start_date?: string
+          streak?: number
+          total_points?: number
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          current_milestone?: number
+          day_number?: number
+          display_name?: string
+          id?: string
+          last_active_date?: string | null
+          start_date?: string
+          streak?: number
+          total_points?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      watched_videos: {
+        Row: {
+          id: string
+          user_id: string
+          video_key: string
+          watched_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          video_key: string
+          watched_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          video_key?: string
+          watched_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
