@@ -17,11 +17,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import heroBanner from "@/assets/hero-banner.png";
 
 
+const BADGES = [
+  { key: "connector", icon: "🔗", name: "Người kết nối", desc: "Mời 50+ Zalo" },
+  { key: "seller", icon: "💰", name: "Người bán hàng", desc: "Chốt 10+ đơn" },
+  { key: "builder", icon: "🌐", name: "Người xây trang", desc: "Hoàn thiện trang bán" },
+  { key: "persistent", icon: "🔥", name: "Người kiên trì", desc: "Streak 7 ngày" },
+  { key: "star", icon: "⭐", name: "KOL nổi bật", desc: "Top 3 vinh danh" },
+];
+
 export function Dashboard() {
   const { user } = useAuth();
   const { profile, loading } = useProfile();
   const [todayPoints, setTodayPoints] = useState(0);
   const [completedToday, setCompletedToday] = useState(0);
+  const [earnedBadges, setEarnedBadges] = useState<Set<string>>(new Set());
 
   const day = profile?.day_number ?? 1;
   const phase = getPhaseFromDay(day);
@@ -43,6 +52,13 @@ export function Dashboard() {
         setTodayPoints(data.reduce((s, m) => s + (m.points_awarded || 0), 0));
       });
 
+    supabase
+      .from("badges")
+      .select("badge_key")
+      .eq("user_id", user.id)
+      .then(({ data }) => {
+        setEarnedBadges(new Set(data?.map((b) => b.badge_key) ?? []));
+      });
   }, [user, profile]);
 
   if (loading) {
@@ -157,6 +173,33 @@ export function Dashboard() {
             <ArrowRight className="h-7 w-7 text-primary-foreground group-hover:translate-x-1 transition-transform" />
           </div>
         </Link>
+
+        {/* Huy hiệu — chứng nhận sự trưởng thành */}
+        <div className="pt-2">
+          <div className="flex items-baseline justify-between mb-3">
+            <h2 className="text-lg md:text-xl font-black tracking-tight">Huy hiệu trưởng thành</h2>
+            <div className="text-xs text-muted-foreground">{earnedBadges.size}/{BADGES.length} đã đạt</div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {BADGES.map((b) => {
+              const earned = earnedBadges.has(b.key);
+              return (
+                <Card
+                  key={b.key}
+                  className={`p-4 text-center border transition-all ${
+                    earned
+                      ? "bg-gradient-to-br from-gold/15 to-primary/10 border-gold/40 glow-gold"
+                      : "bg-card/40 border-border opacity-60"
+                  }`}
+                >
+                  <div className={`text-4xl mb-2 ${earned ? "" : "grayscale"}`}>{b.icon}</div>
+                  <div className="text-xs font-bold">{b.name}</div>
+                  <div className="text-[10px] text-muted-foreground mt-1">{b.desc}</div>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
