@@ -5,7 +5,7 @@ import confetti from "canvas-confetti";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { supabase } from "@/integrations/supabase/client";
-import { MILESTONES, RANK_COLORS, getCurrentMilestoneIndex, todayVN } from "@/lib/missions";
+import { MILESTONES, getCurrentMilestoneIndex, todayVN } from "@/lib/missions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -93,12 +93,15 @@ export function IncomePage() {
         {MILESTONES.map((m, idx) => {
           const achieved = idx <= currentIdx;
           const isNext = idx === nextIdx;
+          const isCurrent = idx === currentIdx;
           const isLegend = m.rank === "Legend";
           return (
             <Card
               key={m.amount}
-              className={`p-4 border transition-all ${
-                isLegend
+              className={`p-4 border transition-all rounded-2xl ${
+                isCurrent
+                  ? "border-running bg-primary/10"
+                  : isLegend
                   ? "bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-yellow-500/10 border-gold/50 animate-pulse-glow"
                   : achieved
                   ? "bg-success/8 border-success/30"
@@ -108,11 +111,11 @@ export function IncomePage() {
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className={`flex-shrink-0 h-12 w-16 rounded-xl bg-gradient-to-br ${RANK_COLORS[m.rank]} flex items-center justify-center font-black text-sm shadow-lg`}>
+                <div className="flex-shrink-0 h-12 w-16 rounded-xl bg-gradient-to-br from-card to-muted border border-border/60 flex items-center justify-center font-black text-sm text-white shadow-lg">
                   ${m.amount}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-bold flex items-center gap-2">
+                  <div className="font-bold flex items-center gap-2 text-white">
                     {m.title}
                     {isLegend && <Sparkles className="h-4 w-4 text-gold" />}
                   </div>

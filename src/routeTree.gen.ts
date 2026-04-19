@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MissionsRouteImport } from './routes/missions'
 import { Route as LoginRouteImport } from './routes/login'
@@ -17,11 +16,6 @@ import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as IncomeRouteImport } from './routes/income'
 import { Route as IndexRouteImport } from './routes/index'
 
-const SkillsRoute = SkillsRouteImport.update({
-  id: '/skills',
-  path: '/skills',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -60,7 +54,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/missions': typeof MissionsRoute
   '/profile': typeof ProfileRoute
-  '/skills': typeof SkillsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,7 +62,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/missions': typeof MissionsRoute
   '/profile': typeof ProfileRoute
-  '/skills': typeof SkillsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,7 +71,6 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/missions': typeof MissionsRoute
   '/profile': typeof ProfileRoute
-  '/skills': typeof SkillsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,16 +81,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/missions'
     | '/profile'
-    | '/skills'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/income'
-    | '/leaderboard'
-    | '/login'
-    | '/missions'
-    | '/profile'
-    | '/skills'
+  to: '/' | '/income' | '/leaderboard' | '/login' | '/missions' | '/profile'
   id:
     | '__root__'
     | '/'
@@ -108,7 +91,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/missions'
     | '/profile'
-    | '/skills'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,18 +100,10 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MissionsRoute: typeof MissionsRoute
   ProfileRoute: typeof ProfileRoute
-  SkillsRoute: typeof SkillsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/skills': {
-      id: '/skills'
-      path: '/skills'
-      fullPath: '/skills'
-      preLoaderRoute: typeof SkillsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -182,7 +156,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MissionsRoute: MissionsRoute,
   ProfileRoute: ProfileRoute,
-  SkillsRoute: SkillsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
