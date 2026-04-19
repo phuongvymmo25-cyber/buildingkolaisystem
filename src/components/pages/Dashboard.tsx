@@ -52,6 +52,13 @@ export function Dashboard() {
         setTodayPoints(data.reduce((s, m) => s + (m.points_awarded || 0), 0));
       });
 
+    supabase
+      .from("badges")
+      .select("badge_key")
+      .eq("user_id", user.id)
+      .then(({ data }) => {
+        setEarnedBadges(new Set(data?.map((b) => b.badge_key) ?? []));
+      });
   }, [user, profile]);
 
   if (loading) {
