@@ -173,3 +173,72 @@
   50% { transform: scale(1.08) rotate(2deg); filter: hue-rotate(-10deg); }
 }
 .animate-fire { animation: fire-flicker 1.6s ease-in-out infinite; }
+
+/* Viền tím chạy xung quanh mốc hiện tại */
+@keyframes border-run {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.border-running {
+  position: relative;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+.border-running::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(90deg,
+    oklch(0.55 0.24 295),
+    oklch(0.78 0.16 75),
+    oklch(0.68 0.25 295),
+    oklch(0.55 0.24 295)
+  );
+  background-size: 200% 200%;
+  animation: border-run 3s linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Khung huyền thoại — top podium */
+.legend-frame {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1rem 0.75rem 1.25rem;
+  overflow: hidden;
+}
+.legend-frame::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: var(--legend-grad, linear-gradient(135deg, oklch(0.55 0.24 295), oklch(0.78 0.16 75)));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+.legend-gold   { --legend-grad: linear-gradient(135deg, oklch(0.78 0.16 75), oklch(0.65 0.22 25), oklch(0.78 0.16 75)); }
+.legend-purple { --legend-grad: linear-gradient(135deg, oklch(0.68 0.25 295), oklch(0.55 0.24 295), oklch(0.78 0.2 320)); }
+.legend-silver { --legend-grad: linear-gradient(135deg, oklch(0.78 0.02 280), oklch(0.55 0.02 280), oklch(0.78 0.02 280)); }
+
+@keyframes legend-shine {
+  0%, 100% { opacity: 0.4; transform: rotate(0deg) scale(1); }
+  50%      { opacity: 0.9; transform: rotate(180deg) scale(1.1); }
+}
+.legend-shine {
+  position: absolute;
+  inset: -20%;
+  background: conic-gradient(from 0deg,
+    transparent 0deg,
+    oklch(0.78 0.16 75 / 0.25) 60deg,
+    transparent 120deg,
+    oklch(0.55 0.24 295 / 0.2) 240deg,
+    transparent 300deg
+  );
+  animation: legend-shine 8s linear infinite;
+  pointer-events: none;
+}
