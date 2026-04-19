@@ -16,7 +16,6 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import heroBanner from "@/assets/hero-banner.png";
 
-interface DayPoints { date: string; points: number }
 
 export function Dashboard() {
   const { user } = useAuth();
