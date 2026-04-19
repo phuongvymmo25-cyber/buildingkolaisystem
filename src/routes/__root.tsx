@@ -1,4 +1,5 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts, useRouterState } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts, useRouterState, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { AppLayout } from "@/components/AppLayout";
 import { Toaster } from "@/components/ui/sonner";
@@ -79,6 +80,17 @@ function RootComponent() {
 function AppShell() {
   const { user, loading } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user && path !== "/login") {
+      navigate({ to: "/login", replace: true });
+    }
+    if (user && path === "/login") {
+      navigate({ to: "/", replace: true });
+    }
+  }, [user, loading, path, navigate]);
 
   if (loading) {
     return (
@@ -88,12 +100,7 @@ function AppShell() {
     );
   }
 
-  // Login page = no layout
-  if (path === "/login") {
-    return <Outlet />;
-  }
-
-  if (!user) {
+  if (path === "/login" || !user) {
     return <Outlet />;
   }
 
