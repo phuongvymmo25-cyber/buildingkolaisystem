@@ -18,22 +18,11 @@ import heroBanner from "@/assets/hero-banner.png";
 
 interface DayPoints { date: string; points: number }
 
-const BADGES = [
-  { key: "connector", icon: "🔗", name: "Người kết nối", desc: "Mời 50+ Zalo" },
-  { key: "seller", icon: "💰", name: "Người bán hàng", desc: "Chốt 10+ đơn" },
-  { key: "builder", icon: "🌐", name: "Người xây trang", desc: "Hoàn thiện trang bán" },
-  { key: "persistent", icon: "🔥", name: "Người kiên trì", desc: "Streak 7 ngày" },
-  { key: "star", icon: "⭐", name: "KOL nổi bật", desc: "Top 3 vinh danh" },
-];
-
 export function Dashboard() {
   const { user } = useAuth();
   const { profile, loading } = useProfile();
   const [todayPoints, setTodayPoints] = useState(0);
   const [completedToday, setCompletedToday] = useState(0);
-  const [weeklyData, setWeeklyData] = useState<DayPoints[]>([]);
-  const [tasksThisWeek, setTasksThisWeek] = useState(0);
-  const [earnedBadges, setEarnedBadges] = useState<Set<string>>(new Set());
 
   const day = profile?.day_number ?? 1;
   const phase = getPhaseFromDay(day);
@@ -41,10 +30,6 @@ export function Dashboard() {
   const totalToday = getTodayMissions(day).length;
   const current = getCurrentMilestone(profile?.current_milestone ?? 0);
   const next = getNextMilestone(profile?.current_milestone ?? 0);
-
-  const points = profile?.total_points ?? 0;
-  const level = getLevelFromPoints(points);
-  const levelProgress = level.next ? ((points - level.min) / (level.next - level.min)) * 100 : 100;
 
   useEffect(() => {
     if (!user) return;
