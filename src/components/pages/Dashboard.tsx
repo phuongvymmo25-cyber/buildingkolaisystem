@@ -62,9 +62,6 @@ export function Dashboard() {
       ? (profile!.current_milestone / next.amount) * 100
       : 100;
 
-  const maxPoints = Math.max(...weeklyData.map((d) => d.points), 10);
-  const target = 25;
-  const taskProgress = Math.min((tasksThisWeek / target) * 100, 100);
 
   return (
     <div className="relative">
