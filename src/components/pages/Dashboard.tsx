@@ -44,32 +44,6 @@ export function Dashboard() {
         setTodayPoints(data.reduce((s, m) => s + (m.points_awarded || 0), 0));
       });
 
-    const loadWeek = async () => {
-      const days: string[] = [];
-      const today = new Date(todayVN());
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - i);
-        days.push(d.toISOString().slice(0, 10));
-      }
-      const { data } = await supabase
-        .from("daily_missions")
-        .select("date, completed, points_awarded")
-        .eq("user_id", user.id)
-        .gte("date", days[0]);
-      const byDate: Record<string, number> = {};
-      let tasks = 0;
-      data?.forEach((r) => {
-        byDate[r.date] = (byDate[r.date] ?? 0) + (r.points_awarded || 0);
-        if (r.completed) tasks++;
-      });
-      setWeeklyData(days.map((d) => ({ date: d, points: byDate[d] ?? 0 })));
-      setTasksThisWeek(tasks);
-
-      const { data: badges } = await supabase.from("badges").select("badge_key").eq("user_id", user.id);
-      setEarnedBadges(new Set(badges?.map((b) => b.badge_key) ?? []));
-    };
-    loadWeek();
   }, [user, profile]);
 
   if (loading) {
