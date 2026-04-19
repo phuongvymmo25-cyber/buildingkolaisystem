@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, ListChecks, BarChart3, DollarSign, GraduationCap, Trophy, LogOut } from "lucide-react";
+import { Home, ListChecks, BarChart3, DollarSign, Trophy, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,7 +12,6 @@ const NAV = [
   { to: "/missions", label: "Nhiệm vụ", icon: ListChecks },
   { to: "/skills", label: "Năng lực", icon: BarChart3 },
   { to: "/income", label: "Dòng tiền", icon: DollarSign },
-  { to: "/training", label: "Học", icon: GraduationCap },
   { to: "/leaderboard", label: "Vinh danh", icon: Trophy },
 ] as const;
 
