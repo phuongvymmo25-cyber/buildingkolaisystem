@@ -202,6 +202,7 @@ export function Dashboard() {
             </div>
             <ArrowRight className="h-7 w-7 text-primary-foreground group-hover:translate-x-1 transition-transform" />
           </div>
+        </Link>
       </div>
     </div>
   );
