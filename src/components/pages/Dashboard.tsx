@@ -10,7 +10,6 @@ import {
   getCurrentMilestone,
   getNextMilestone,
   getTodayMissions,
-  getLevelFromPoints,
   todayVN,
 } from "@/lib/missions";
 import { Card } from "@/components/ui/card";
