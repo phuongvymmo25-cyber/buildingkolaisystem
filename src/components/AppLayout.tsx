@@ -53,7 +53,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="border-t border-border p-4">
-          <div className="flex items-center gap-3 mb-3">
+          <Link to="/profile" className="flex items-center gap-3 mb-3 hover:bg-sidebar-accent/50 -mx-2 px-2 py-2 rounded-lg transition">
             <Avatar className="h-9 w-9 ring-2 ring-primary/30">
               <AvatarImage src={profile?.avatar_url ?? undefined} />
               <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
@@ -66,7 +66,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 {milestone ? `$${milestone.amount} • ${milestone.title}` : "Chưa có mốc"}
               </div>
             </div>
-          </div>
+          </Link>
           <button
             onClick={() => signOut()}
             className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition"
@@ -84,12 +84,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <img src={logo} alt="" width={28} height={28} />
             <span className="font-bold text-sm text-gradient-primary">KOL AI SYSTEM</span>
           </div>
-          <Avatar className="h-8 w-8 ring-2 ring-primary/30">
-            <AvatarImage src={profile?.avatar_url ?? undefined} />
-            <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
-              {profile?.display_name?.slice(0, 2).toUpperCase() ?? "KOL"}
-            </AvatarFallback>
-          </Avatar>
+          <Link to="/profile">
+            <Avatar className="h-8 w-8 ring-2 ring-primary/30">
+              <AvatarImage src={profile?.avatar_url ?? undefined} />
+              <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
+                {profile?.display_name?.slice(0, 2).toUpperCase() ?? "KOL"}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
         </header>
 
         <div className="px-4 md:px-8 py-6 max-w-6xl mx-auto">{children}</div>
