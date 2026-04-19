@@ -14,6 +14,7 @@ import {
 } from "@/lib/missions";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import heroBanner from "@/assets/hero-banner.png";
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -61,6 +62,21 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Hero banner */}
+      <div className="relative rounded-2xl overflow-hidden border border-border shadow-[0_20px_60px_-20px_oklch(0.55_0.24_30/0.5)]">
+        <img
+          src={heroBanner}
+          alt="Building The KOL AI System — Khởi hành 25/4/2026"
+          className="w-full h-auto block"
+          loading="eager"
+        />
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent p-4 md:p-6">
+          <div className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-gold">KOL AI Go Global</div>
+          <div className="text-base md:text-2xl font-black mt-1">Building The KOL AI System</div>
+          <div className="text-xs md:text-sm text-muted-foreground">Khởi hành thứ 7 — 25/4/2026</div>
+        </div>
+      </div>
+
       {/* Greeting */}
       <div className="hidden md:flex items-center justify-between">
         <div>

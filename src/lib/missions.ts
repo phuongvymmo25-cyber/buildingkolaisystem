@@ -62,45 +62,117 @@ export function getPhaseFromDay(day: number): Phase {
   return 4;
 }
 
+// Trang bán hàng + quà tặng — độ khó tăng dần theo ngày, gắn với nhiệm vụ
+export function getSalesPageMission(day: number): MissionDef {
+  const phase = getPhaseFromDay(day);
+  if (phase === 1) {
+    return {
+      key: `d${day}_sales`,
+      icon: "🌐",
+      name: `Trang bán hàng + Quà tặng — Ngày ${day}`,
+      description: "Viết nháp: tôi là ai, bán gì, ai cần mua. Tặng kèm 1 ebook/checklist mini liên quan tới nhóm Zalo bạn vừa mời.",
+      quota: 1,
+      unit: "phần",
+      points: 15,
+      priority: 3,
+    };
+  }
+  if (phase === 2) {
+    return {
+      key: `d${day}_sales`,
+      icon: "🌐",
+      name: `Trang bán hàng + Quà tặng — Ngày ${day}`,
+      description: "Hoàn thiện headline + CTA + 1 quà tặng số (template/script) cho khách đăng ký từ nhóm Zalo của bạn.",
+      quota: 1,
+      unit: "phần",
+      points: 25,
+      priority: 3,
+    };
+  }
+  if (phase === 3) {
+    return {
+      key: `d${day}_sales`,
+      icon: "🌐",
+      name: `Trang bán hàng + Quà tặng — Ngày ${day}`,
+      description: "Thêm testimonial + FAQ + combo quà tặng (mini-course) gắn với chủ đề bạn đang chốt đơn hôm nay.",
+      quota: 1,
+      unit: "phần",
+      points: 35,
+      priority: 3,
+    };
+  }
+  return {
+    key: `d${day}_sales`,
+    icon: "🌐",
+    name: `Trang bán hàng + Quà tặng — Ngày ${day}`,
+    description: "Timer đếm ngược, video testimonial, upsell + bộ quà tặng VIP (bundle) đồng bộ với sprint flash sale.",
+    quota: 1,
+    unit: "phần",
+    points: 45,
+    priority: 3,
+  };
+}
+
+// Sản xuất video POV — mỗi ngày tự quay video POV về việc bạn đang làm
+export function getPOVVideoMission(day: number): MissionDef {
+  const phase = getPhaseFromDay(day);
+  const points = phase === 1 ? 15 : phase === 2 ? 20 : phase === 3 ? 25 : 30;
+  return {
+    key: `d${day}_pov`,
+    icon: "🎥",
+    name: `Sản xuất video POV — Ngày ${day}`,
+    description: "Quay 1 video POV (góc nhìn thứ nhất) về những gì bạn đang làm hôm nay để đạt kết quả: mời nhóm, chốt đơn, xây trang. Đăng lên TikTok/Reels/Story.",
+    quota: 1,
+    unit: "video",
+    points,
+  };
+}
+
 export const MISSIONS_BY_PHASE: Record<Phase, MissionDef[]> = {
   1: [
     { key: "p1_invite", icon: "🔗", name: "Mời thành viên Zalo", description: "Mời 3 người vào nhóm Zalo hôm nay", quota: 3, unit: "người", points: 20, priority: 1 },
     { key: "p1_message", icon: "💬", name: "Nhắn tin chủ động", description: "Nhắn tin cho 5 người, chia sẻ giá trị", quota: 5, unit: "người", points: 15, priority: 2 },
     { key: "p1_content", icon: "✍️", name: "Đăng bài content", description: "1 bài trên mạng xã hội", quota: 1, unit: "bài", points: 10 },
-    { key: "p1_video", icon: "🎬", name: "Xem video học", description: "Xem 1 bài học, ghi 1 điểm áp dụng", quota: 1, unit: "video", points: 10 },
-    { key: "p1_page", icon: "📝", name: "Xây trang bán hàng", description: "Viết nháp: tôi là ai, bán gì, ai cần mua", quota: 1, unit: "lần", points: 15, priority: 3 },
   ],
   2: [
     { key: "p2_invite", icon: "🔗", name: "Mời thành viên Zalo", description: "Mời 7 người — dùng story + bài đăng", quota: 7, unit: "người", points: 25, priority: 1 },
     { key: "p2_close", icon: "💰", name: "Chốt đơn bán hàng", description: "Nhắn tin 10 người, chốt ít nhất 1 đơn", quota: 10, unit: "người", points: 40, priority: 2 },
-    { key: "p2_launch", icon: "🌐", name: "Ra mắt trang bán hàng", description: "Đăng link trang lên Zalo, Facebook, bio", quota: 1, unit: "link", points: 30, priority: 3 },
     { key: "p2_content", icon: "✍️", name: "Content bằng chứng thật", description: "1–2 bài kết quả thật, câu chuyện thật", quota: 2, unit: "bài", points: 20 },
     { key: "p2_call", icon: "📞", name: "Gọi kết nối đồng đội", description: "Gọi 1 người học script bán hàng", quota: 1, unit: "cuộc", points: 15 },
   ],
   3: [
     { key: "p3_invite", icon: "🔗", name: "Tăng trưởng Zalo", description: "Mời 15 người — kết hợp referral từ thành viên cũ", quota: 15, unit: "người", points: 30, priority: 1 },
     { key: "p3_sales", icon: "💰", name: "Bán hàng có hệ thống", description: "Liên hệ 15 người, chốt 2–3 đơn", quota: 15, unit: "người", points: 50, priority: 2 },
-    { key: "p3_upgrade", icon: "🌐", name: "Nâng cấp trang bán hàng", description: "Thêm testimonial, FAQ, CTA rõ ràng", quota: 1, unit: "lần", points: 35, priority: 3 },
     { key: "p3_proof", icon: "✍️", name: "Content chứng minh kết quả", description: "2 bài: màn hình thu nhập, phản hồi khách", quota: 2, unit: "bài", points: 25 },
     { key: "p3_team", icon: "👥", name: "Xây team mini", description: "Đào tạo 1 người cùng bán, phân chia hoa hồng", quota: 1, unit: "người", points: 40 },
   ],
   4: [
     { key: "p4_viral", icon: "🔗", name: "Viral mời Zalo", description: "Mời 25+ người — live stream, challenge cộng đồng", quota: 25, unit: "người", points: 40, priority: 1 },
     { key: "p4_sprint", icon: "💰", name: "Sprint bán hàng toàn lực", description: "Tiếp cận 25 người, flash sale, deadline cuối tháng", quota: 25, unit: "người", points: 60, priority: 2 },
-    { key: "p4_finalize", icon: "🌐", name: "Hoàn thiện trang bán hàng", description: "Thêm timer đếm ngược, video testimonial, upsell", quota: 1, unit: "lần", points: 40, priority: 3 },
     { key: "p4_content", icon: "✍️", name: "Content bứt phá 3 lần/ngày", description: "Sáng/trưa/tối — hành trình tiến đến $1,000", quota: 3, unit: "bài", points: 30 },
     { key: "p4_contest", icon: "🏆", name: "Huy động cả nhóm", description: "Tổ chức mini contest trong Zalo — ai mời nhiều nhất", quota: 1, unit: "contest", points: 50 },
   ],
 };
 
 export function getTodayMissions(day: number): MissionDef[] {
-  return MISSIONS_BY_PHASE[getPhaseFromDay(day)];
+  // Nhiệm vụ pha + Sản xuất video POV (mặc định mỗi ngày) + Trang bán hàng/quà tặng (mặc định mỗi ngày)
+  return [
+    ...MISSIONS_BY_PHASE[getPhaseFromDay(day)],
+    getPOVVideoMission(day),
+    getSalesPageMission(day),
+  ];
 }
 
 export function getAllMissionsMap(): Record<string, MissionDef> {
   const map: Record<string, MissionDef> = {};
   for (const phase of [1, 2, 3, 4] as Phase[]) {
     for (const m of MISSIONS_BY_PHASE[phase]) map[m.key] = m;
+  }
+  for (let d = 1; d <= 30; d++) {
+    const pov = getPOVVideoMission(d);
+    const sales = getSalesPageMission(d);
+    map[pov.key] = pov;
+    map[sales.key] = sales;
   }
   return map;
 }
@@ -163,7 +235,6 @@ export function getLevelFromPoints(points: number): { name: string; min: number;
 }
 
 export function todayVN(): string {
-  // YYYY-MM-DD in Asia/Ho_Chi_Minh
   const d = new Date();
   const utc = d.getTime() + d.getTimezoneOffset() * 60000;
   const vn = new Date(utc + 7 * 3600000);

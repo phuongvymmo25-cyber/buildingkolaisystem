@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, ListChecks, BarChart3, DollarSign, GraduationCap, Trophy, LogOut } from "lucide-react";
+import { Home, ListChecks, BarChart3, DollarSign, Trophy, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,7 +12,6 @@ const NAV = [
   { to: "/missions", label: "Nhiệm vụ", icon: ListChecks },
   { to: "/skills", label: "Năng lực", icon: BarChart3 },
   { to: "/income", label: "Dòng tiền", icon: DollarSign },
-  { to: "/training", label: "Học", icon: GraduationCap },
   { to: "/leaderboard", label: "Vinh danh", icon: Trophy },
 ] as const;
 
@@ -100,7 +99,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-sidebar/95 backdrop-blur-xl border-t border-border">
         <div className="grid grid-cols-5">
-          {NAV.slice(0, 5).map((item) => {
+          {NAV.map((item) => {
             const active = item.to === "/" ? path === "/" : path.startsWith(item.to);
             return (
               <Link
