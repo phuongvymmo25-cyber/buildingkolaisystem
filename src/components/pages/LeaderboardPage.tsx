@@ -1,11 +1,23 @@
 import { useEffect, useState } from "react";
-import { Crown, Share2, Star, Flame } from "lucide-react";
+import { Crown, Share2, Star, Flame, Trash2, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
 interface LeaderRow {
@@ -20,11 +32,12 @@ type Range = "all" | "week" | "month";
 
 export function LeaderboardPage() {
   const { user } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const [rows, setRows] = useState<LeaderRow[]>([]);
   const [range, setRange] = useState<Range>("all");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const load = async () => {
+  const load = async () => {
       // Đo bằng TIỀN (current_milestone), tie-break bằng điểm
       const { data } = await supabase
         .from("profiles")
@@ -53,9 +66,24 @@ export function LeaderboardPage() {
           .sort((a, b) => b.current_milestone - a.current_milestone || b.total_points - a.total_points);
       }
       setRows(result);
-    };
+  };
+
+  useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [range]);
+
+  const handleDelete = async (targetId: string, name: string) => {
+    setDeletingId(targetId);
+    const { error } = await supabase.rpc("admin_delete_user", { _target_user_id: targetId });
+    setDeletingId(null);
+    if (error) {
+      toast.error("Xóa thất bại: " + error.message);
+      return;
+    }
+    toast.success(`Đã xóa thành viên ${name}`);
+    load();
+  };
 
   const top3 = rows.slice(0, 3);
   const rest = rows.slice(3);
@@ -75,6 +103,11 @@ export function LeaderboardPage() {
         <div>
           <h1 className="text-2xl md:text-3xl font-black tracking-tight">Vinh danh</h1>
           <p className="text-sm text-muted-foreground mt-1">Bảng xếp hạng đo theo dòng tiền đạt được.</p>
+          {isAdmin && (
+            <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/15 border border-primary/30 text-[10px] font-bold text-primary uppercase tracking-wider">
+              <ShieldCheck className="h-3 w-3" /> Chế độ quản trị
+            </div>
+          )}
         </div>
         {myRank > 0 && (
           <Button onClick={share} variant="outline" size="sm">
@@ -137,6 +170,37 @@ export function LeaderboardPage() {
                   <div className="text-[10px] text-muted-foreground">{r.total_points} điểm</div>
                 </div>
                 <div className="font-black text-sm text-gold">${r.current_milestone}</div>
+                {isAdmin && r.id !== user?.id && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                        disabled={deletingId === r.id}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Xóa thành viên?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Bạn sắp xóa <span className="font-bold text-foreground">{r.display_name}</span> khỏi hệ thống. Toàn bộ dữ liệu (nhiệm vụ, mốc thu nhập, huy hiệu, hồ sơ và tài khoản đăng nhập) sẽ bị xóa vĩnh viễn và không thể khôi phục.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Hủy</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(r.id, r.display_name)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Xóa vĩnh viễn
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </Card>
             ))}
           </div>
