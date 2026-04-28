@@ -134,10 +134,10 @@ export function LeaderboardPage() {
           )}
 
           {top3.length > 0 && (
-            <div className="grid grid-cols-3 gap-2 md:gap-4 items-end">
-              <PodiumCard row={top3[1]} rank={2} variant="silver" />
+            <div className="grid grid-cols-3 gap-3 md:gap-5 items-end">
+              <PodiumCard row={top3[1]} rank={2} variant="purple" />
               <PodiumCard row={top3[0]} rank={1} variant="gold" featured />
-              <PodiumCard row={top3[2]} rank={3} variant="purple" />
+              <PodiumCard row={top3[2]} rank={3} variant="ruby" />
             </div>
           )}
 
@@ -152,14 +152,14 @@ export function LeaderboardPage() {
             {rest.map((r, i) => (
               <Card
                 key={r.id}
-                className={`p-3 flex items-center gap-3 border transition ${
-                  r.id === user?.id
-                    ? "bg-primary/15 border-primary/40"
-                    : "bg-card/60 backdrop-blur border-border"
+                className={`member-row p-3 flex items-center gap-3 rounded-xl ${
+                  r.id === user?.id ? "member-row-self" : ""
                 }`}
               >
-                <div className="w-7 text-center font-black text-muted-foreground">{i + 4}</div>
-                <Avatar className="h-9 w-9">
+                <div className="w-8 text-center font-black text-sm bg-gradient-to-b from-foreground/80 to-foreground/40 bg-clip-text text-transparent">
+                  #{i + 4}
+                </div>
+                <Avatar className="h-10 w-10 ring-2 ring-primary/30">
                   <AvatarImage src={r.avatar_url ?? undefined} />
                   <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
                     {r.display_name.slice(0, 2).toUpperCase()}
@@ -167,9 +167,14 @@ export function LeaderboardPage() {
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <div className="font-bold text-sm truncate text-white">{r.display_name}</div>
-                  <div className="text-[10px] text-muted-foreground">{r.total_points} điểm</div>
+                  <div className="text-[10px] text-muted-foreground flex items-center gap-1">
+                    <Flame className="h-2.5 w-2.5 text-orange-400" />
+                    {r.total_points} điểm
+                  </div>
                 </div>
-                <div className="font-black text-sm text-gold">${r.current_milestone}</div>
+                <div className="font-black text-base text-transparent bg-clip-text bg-gradient-to-r from-gold to-amber-300 drop-shadow-[0_0_8px_oklch(0.78_0.16_75/0.4)]">
+                  ${r.current_milestone}
+                </div>
                 {isAdmin && r.id !== user?.id && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -218,67 +223,91 @@ function PodiumCard({
 }: {
   row?: LeaderRow;
   rank: number;
-  variant: "gold" | "silver" | "purple";
+  variant: "gold" | "purple" | "ruby";
   featured?: boolean;
 }) {
   if (!row) return <div />;
-  const frameClass =
-    variant === "gold" ? "legend-gold" : variant === "purple" ? "legend-purple" : "legend-silver";
-  const tagBg =
-    variant === "gold"
-      ? "bg-gradient-to-r from-gold to-amber-500"
-      : variant === "purple"
-        ? "bg-gradient-to-r from-primary to-primary-glow"
-        : "bg-gradient-to-r from-slate-400 to-slate-600";
+  const cfg = {
+    gold:   { frame: "legend-gold",   bg: "podium-bg-gold",   fire: "fire-gold",   tag: "bg-gradient-to-r from-gold to-amber-500", ring: "ring-gold",          accent: "oklch(0.85 0.18 80)",  text: "text-gold",     romanCol: "text-gold" },
+    purple: { frame: "legend-purple", bg: "podium-bg-purple", fire: "fire-purple", tag: "bg-gradient-to-r from-primary to-primary-glow", ring: "ring-primary",  accent: "oklch(0.7 0.25 295)",  text: "text-primary-glow", romanCol: "text-primary-glow" },
+    ruby:   { frame: "legend-ruby",   bg: "podium-bg-ruby",   fire: "fire-ruby",   tag: "bg-gradient-to-r from-red-500 to-rose-600", ring: "ring-red-400",     accent: "oklch(0.72 0.24 25)",  text: "text-red-400",  romanCol: "text-red-400" },
+  }[variant];
+
+  // ID khác nhau cho mỗi vòng SVG (tránh trùng path khi nhiều podium)
+  const orbitId = `orbit-${variant}-${rank}`;
+  const romanText = " ✦ I ✦ II ✦ III ✦ IV ✦ V ✦ VI ✦ VII ✦ VIII ✦ IX ✦ X ✦ XI ✦ XII ✦ ";
 
   return (
-    <div className={`relative ${featured ? "md:-mt-6" : ""}`}>
-      <div className={`legend-frame ${frameClass} bg-card/80 backdrop-blur-sm`}>
+    <div className={`relative ${featured ? "md:-mt-8" : ""}`}>
+      <div className={`legend-frame ${cfg.frame} ${cfg.bg} backdrop-blur-sm`}>
         <div className="legend-shine" />
 
         {featured && (
           <Crown
-            className="absolute -top-3 left-1/2 -translate-x-1/2 h-7 w-7 text-gold drop-shadow-[0_0_10px_oklch(0.78_0.16_75/0.9)]"
+            className="absolute -top-4 left-1/2 -translate-x-1/2 h-9 w-9 text-gold drop-shadow-[0_0_14px_oklch(0.78_0.16_75/0.95)] z-10"
             fill="currentColor"
           />
         )}
 
         <div className="relative flex flex-col items-center text-center">
-          {/* Avatar với vòng "ngắm" */}
-          <div className="relative">
-            <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full -z-0 opacity-70" aria-hidden>
-              <circle
-                cx="50"
-                cy="50"
-                r="46"
-                fill="none"
-                stroke={variant === "gold" ? "oklch(0.78 0.16 75)" : variant === "purple" ? "oklch(0.68 0.25 295)" : "oklch(0.78 0.02 280)"}
-                strokeWidth="1.5"
-                strokeDasharray="4 6"
-              />
-              <line x1="50" y1="0" x2="50" y2="10" stroke="currentColor" className={variant === "gold" ? "text-gold" : variant === "purple" ? "text-primary" : "text-slate-400"} strokeWidth="2" />
-              <line x1="50" y1="90" x2="50" y2="100" stroke="currentColor" className={variant === "gold" ? "text-gold" : variant === "purple" ? "text-primary" : "text-slate-400"} strokeWidth="2" />
-              <line x1="0" y1="50" x2="10" y2="50" stroke="currentColor" className={variant === "gold" ? "text-gold" : variant === "purple" ? "text-primary" : "text-slate-400"} strokeWidth="2" />
-              <line x1="90" y1="50" x2="100" y2="50" stroke="currentColor" className={variant === "gold" ? "text-gold" : variant === "purple" ? "text-primary" : "text-slate-400"} strokeWidth="2" />
+          {/* === HÀO QUANG: avatar + vòng lửa + chữ La Mã xoay === */}
+          <div
+            className={`relative ${featured ? "h-32 w-32 md:h-44 md:w-44" : "h-24 w-24 md:h-32 md:w-32"} flex items-center justify-center`}
+          >
+            {/* Vòng lửa xoay */}
+            <div className={`fire-ring ${cfg.fire}`} />
+
+            {/* Vòng nét đứt xoay ngược */}
+            <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full halo-rotate-rev opacity-80" aria-hidden>
+              <circle cx="50" cy="50" r="48" fill="none" stroke={cfg.accent} strokeWidth="0.8" strokeDasharray="2 4" />
+              <circle cx="50" cy="50" r="44" fill="none" stroke={cfg.accent} strokeWidth="0.4" strokeDasharray="1 3" opacity="0.6" />
             </svg>
-            <Avatar className={`relative h-16 w-16 md:h-20 md:w-20 m-2 ring-2 ${variant === "gold" ? "ring-gold" : variant === "purple" ? "ring-primary" : "ring-slate-400"}`}>
-              <AvatarImage src={row.avatar_url ?? undefined} />
-              <AvatarFallback className="bg-primary/20 text-primary font-black">
+
+            {/* Chữ La Mã chạy quanh */}
+            <svg viewBox="0 0 120 120" className={`absolute inset-0 w-full h-full halo-rotate ${cfg.romanCol}`} aria-hidden>
+              <defs>
+                <path id={orbitId} d="M 60,60 m -52,0 a 52,52 0 1,1 104,0 a 52,52 0 1,1 -104,0" />
+              </defs>
+              <text fontSize="6.5" fontWeight="700" fill="currentColor" letterSpacing="2" style={{ fontFamily: "Cinzel, Cormorant Garamond, serif" }}>
+                <textPath href={`#${orbitId}`} startOffset="0">
+                  {romanText.repeat(3)}
+                </textPath>
+              </text>
+            </svg>
+
+            {/* Tia sáng tỏa */}
+            <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full halo-rotate opacity-40" aria-hidden>
+              {Array.from({ length: 12 }).map((_, i) => (
+                <line
+                  key={i}
+                  x1="50" y1="4" x2="50" y2="14"
+                  stroke={cfg.accent}
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  transform={`rotate(${i * 30} 50 50)`}
+                />
+              ))}
+            </svg>
+
+            {/* AVATAR LỚN — trung tâm */}
+            <Avatar className={`relative h-[62%] w-[62%] ring-4 ${cfg.ring} shadow-[0_0_30px_-4px_currentColor] z-[1]`} style={{ color: cfg.accent }}>
+              <AvatarImage src={row.avatar_url ?? undefined} className="object-cover" />
+              <AvatarFallback className="bg-gradient-to-br from-primary/30 to-primary/10 text-foreground font-black text-lg md:text-2xl">
                 {row.display_name.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </div>
 
           {/* TOP tag */}
-          <div className={`mt-1 px-3 py-0.5 rounded-full text-[10px] font-black tracking-widest text-background ${tagBg}`}>
+          <div className={`mt-3 px-3.5 py-1 rounded-full text-[10px] md:text-xs font-black tracking-[0.2em] text-background shadow-lg ${cfg.tag}`}>
             TOP {rank}
           </div>
 
-          <div className="mt-2 text-sm md:text-base font-black text-white truncate max-w-full px-1">
+          <div className="mt-2 text-sm md:text-lg font-black text-white truncate max-w-full px-1 drop-shadow">
             {row.display_name}
           </div>
 
-          <div className="mt-2 flex items-center gap-1 text-gold font-black text-base md:text-lg">
+          <div className={`mt-2 flex items-center gap-1 font-black text-base md:text-xl ${cfg.text}`}>
             <Star className="h-4 w-4" fill="currentColor" />
             ${row.current_milestone}
           </div>
