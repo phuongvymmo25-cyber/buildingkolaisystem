@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import leaderboardHero from "@/assets/leaderboard-hero.jpg";
 
 interface LeaderRow {
   id: string;
@@ -99,6 +100,16 @@ export function LeaderboardPage() {
 
   return (
     <div className="space-y-5">
+      {/* Hero banner — ảnh KOL AI SYSTEM rõ phía trên, mờ dần phía dưới */}
+      <div className="leaderboard-hero aspect-[16/7] md:aspect-[16/6]">
+        <img
+          src={leaderboardHero}
+          alt="KOL AI SYSTEM"
+          className="leaderboard-hero__img"
+          loading="eager"
+        />
+      </div>
+
       <div className="flex items-start justify-between gap-2">
         <div>
           <h1 className="text-2xl md:text-3xl font-black tracking-tight">Vinh danh</h1>
@@ -124,15 +135,6 @@ export function LeaderboardPage() {
         </TabsList>
 
         <TabsContent value={range} className="mt-5 space-y-5">
-          {/* Header HUYỀN THOẠI KOL AI */}
-          {top3.length > 0 && (
-            <div className="text-center">
-              <h2 className="text-2xl md:text-4xl font-black tracking-[0.2em] uppercase bg-gradient-to-r from-gold via-primary-glow to-gold bg-clip-text text-transparent drop-shadow-[0_0_24px_oklch(0.78_0.16_75/0.4)]">
-                Huyền thoại KOL AI
-              </h2>
-            </div>
-          )}
-
           {top3.length > 0 && (
             <div className="grid grid-cols-3 gap-3 md:gap-5 items-end">
               <PodiumCard row={top3[1]} rank={2} variant="purple" />
