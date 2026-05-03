@@ -198,6 +198,9 @@ export const MILESTONES: MilestoneDef[] = [
   { amount: 650, title: "Sắp chinh phục", rank: "Diamond" },
   { amount: 880, title: "Gần đỉnh rồi", rank: "Diamond" },
   { amount: 1000, title: "KOL AI MASTER", rank: "Legend" },
+  { amount: 1250, title: "Huyền Thoại", rank: "Legend" },
+  { amount: 1500, title: "Doanh Chủ", rank: "Legend" },
+  { amount: 2000, title: "Builder Good", rank: "Legend" },
 ];
 
 export const RANK_COLORS: Record<MilestoneDef["rank"], string> = {
