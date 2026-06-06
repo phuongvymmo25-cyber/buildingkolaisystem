@@ -5,6 +5,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getCurrentMilestone } from "@/lib/missions";
 import logo from "@/assets/logo.png";
+import heroBanner from "@/assets/hero-banner.png";
 import type { ReactNode } from "react";
 
 const NAV = [
@@ -53,7 +54,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <div className="border-t border-border p-4">
           <Link to="/profile" className="flex items-center gap-3 mb-3 hover:bg-sidebar-accent/50 -mx-2 px-2 py-2 rounded-lg transition">
             <Avatar className="h-9 w-9 ring-2 ring-primary/30">
-              <AvatarImage src={profile?.avatar_url ?? undefined} />
+              <AvatarImage src={profile?.avatar_url ?? heroBanner} className="object-cover" />
               <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
                 {profile?.display_name?.slice(0, 2).toUpperCase() ?? "KOL"}
               </AvatarFallback>
@@ -84,7 +85,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
           <Link to="/profile">
             <Avatar className="h-8 w-8 ring-2 ring-primary/30">
-              <AvatarImage src={profile?.avatar_url ?? undefined} />
+              <AvatarImage src={profile?.avatar_url ?? heroBanner} className="object-cover" />
               <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
                 {profile?.display_name?.slice(0, 2).toUpperCase() ?? "KOL"}
               </AvatarFallback>
