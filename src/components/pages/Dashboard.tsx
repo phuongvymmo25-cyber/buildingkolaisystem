@@ -82,37 +82,34 @@ export function Dashboard() {
 
   return (
     <div className="relative">
-      {/* Hero banner làm NỀN mờ ở dưới — tạo cảm xúc */}
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 -z-0 overflow-hidden"
-      >
-        <img
-          src={heroBanner}
-          alt=""
-          className="absolute inset-x-0 bottom-0 w-full object-cover opacity-[0.18] blur-[2px]"
-          style={{ maskImage: "linear-gradient(to top, black 20%, transparent 95%)", WebkitMaskImage: "linear-gradient(to top, black 20%, transparent 95%)" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background/80" />
-      </div>
-
       <div className="relative z-10 space-y-6">
-        {/* Greeting — info LÊN TRÊN */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight">
-              Chào, <span className="text-gradient-primary">{profile?.display_name}</span> 👋
+        {/* HERO COVER — bìa ảnh đầu tiên, full width, tỷ lệ chuẩn */}
+        <div className="hero-cover">
+          <img
+            src={heroBanner}
+            alt="KOL AI SYSTEM — Building"
+            className="hero-cover__img"
+            loading="eager"
+          />
+          <div className="hero-cover__shine" aria-hidden />
+          <div className="hero-cover__veil" aria-hidden />
+          <div className="hero-cover__content">
+            <span className="hero-cover__tag">
+              <span className="hero-cover__dot" /> KOL AI SYSTEM · BUILDING
+            </span>
+            <h1 className="hero-cover__title">
+              Chào, <span className="text-gradient-gold">{profile?.display_name}</span>
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">Cùng chinh phục thử thách hôm nay nhé!</p>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            {current && (
-              <div className="px-3 py-1.5 rounded-xl bg-gold/15 border border-gold/30 text-gold text-xs md:text-sm font-bold flex items-center gap-2">
-                <Trophy className="h-4 w-4" /> ${current.amount} • {current.title}
-              </div>
-            )}
-            <div className="px-3 py-1.5 rounded-xl bg-primary/15 border border-primary/30 text-primary font-bold text-xs md:text-sm">
-              Ngày {day}/30
+            <p className="hero-cover__subtitle">
+              Hôm nay là <b className="text-gold">ngày {day}/30</b> — chinh phục từng nhiệm vụ, bứt phá dòng tiền.
+            </p>
+            <div className="hero-cover__chips">
+              {current && (
+                <div className="hero-chip hero-chip--gold">
+                  <Trophy className="h-4 w-4" /> ${current.amount} · {current.title}
+                </div>
+              )}
+              <div className="hero-chip hero-chip--purple">Ngày {day}/30</div>
             </div>
           </div>
         </div>
